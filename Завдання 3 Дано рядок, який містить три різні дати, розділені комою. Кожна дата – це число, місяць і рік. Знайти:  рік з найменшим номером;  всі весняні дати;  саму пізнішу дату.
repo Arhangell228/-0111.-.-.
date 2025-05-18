@@ -1,0 +1,56 @@
+using System;
+using System.Text;
+using System.Globalization;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.InputEncoding = Encoding.UTF8;
+
+        Console.WriteLine("Введіть 3 дати у форматі дд.мм.рррр, розділені комами:");
+        string input = Console.ReadLine();
+
+        string[] dateStrings = input.Split(',');
+        DateTime[] dates = new DateTime[3];
+
+        for (int i = 0; i < dateStrings.Length; i++)
+        {
+            if (DateTime.TryParseExact(dateStrings[i].Trim(), "dd.MM.yyyy",
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
+            {
+                dates[i] = date;
+            }
+            else
+            {
+                Console.WriteLine($"Помилка: Неможливо розпізнати дату: {dateStrings[i]}");
+                return;
+            }
+        }
+
+        // Знаходимо рік з найменшим номером
+        int minYear = dates.Min(d => d.Year);
+        Console.WriteLine($"Найменший рік: {minYear}");
+
+        // Знаходимо всі весняні дати (березень, квітень, травень)
+        var springDates = dates.Where(d => d.Month >= 3 && d.Month <= 5).ToList();
+        Console.WriteLine("Весняні дати:");
+        if (springDates.Count > 0)
+        {
+            foreach (var d in springDates)
+            {
+                Console.WriteLine(d.ToString("dd.MM.yyyy"));
+            }
+        }
+        else
+        {
+            Console.WriteLine("Немає весняних дат.");
+        }
+
+        // Найпізніша дата
+        DateTime latestDate = dates.Max();
+        Console.WriteLine($"Найпізніша дата: {latestDate.ToString("dd.MM.yyyy")}");
+    }
+}
